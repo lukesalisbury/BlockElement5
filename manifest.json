@@ -1,0 +1,25 @@
+{
+
+	"name": "BlockElement5",
+	"version": "0.1",
+	
+	"description": "Trys to block HTML video element or atleast trys to pause it",
+
+	"permissions": [
+		"tabs"
+	],
+	"content_scripts": [
+		{
+			"matches": ["*://*/*"],
+			"js": ["lib.js", "background.js"],
+			"run_at": "document_end"
+		},
+		{
+			"matches": ["*://*/*"],
+			"js": ["lib.js", "watch.js"],
+			"run_at": "document_start"
+		}
+	],
+	"content_security_policy": "script-src 'self'; object-src 'self'",
+	"manifest_version": 2
+}
