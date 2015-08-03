@@ -18,7 +18,8 @@ function blockVideo(videoElement) {
 		clickToPlay.style.cursor = 'pointer'
 		clickToPlay.style.height = '100%'
 		clickToPlay.style.textAlign = 'center'
-		
+		clickToPlay.style.zIndex = '666'
+		clickToPlay.style.position = 'relative'
 		parentSq.replaceChild( clickToPlay, parent );
 		clickToPlay.addEventListener('click', unblockVideo, true);
 	}
