@@ -1,18 +1,24 @@
 var observer = new MutationObserver(function(mutations) {
 	mutations.forEach(function(mutation) {
 		BlockAllVideos()
+		if ( mutation.type == "childList")
+		{
+			mutation.addedNodes.forEach(function(node) {
+				if ( node instanceof HTMLVideoElement)
+				{
+					console.log('video created', node)
+					//blockVideo(node)
+				}
+				
+			});
+		}
 	});
 });
 
-var observer2 = new MutationObserver(function(mutations) {
-	mutations.forEach(function(mutation) {
-		//console.log(mutation);
-	});
-});
 
 // Pause any dynamic added or started Video
 document.addEventListener("DOMContentLoaded", function(event) {
-	observer.observe(document.body, {"childList": true, "subtree": false});
-	//observer2.observe(document.getElementsByTagName('video'), {"attributes": true});
-
+	if ( document )
+		observer.observe(document.body, {"childList": true, "subtree": false});
+	//BlockAllVideos()
 })

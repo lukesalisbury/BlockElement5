@@ -1,7 +1,7 @@
 {
 
 	"name": "BlockElement5",
-	"version": "0.2",
+	"version": "0.5",
 	
 	"description": "Trys to block HTML video element or atleast trys to pause it",
 
