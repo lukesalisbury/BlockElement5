@@ -1,13 +1,12 @@
 var observer = new MutationObserver(function(mutations) {
+	BlockAllVideos()
 	mutations.forEach(function(mutation) {
-		BlockAllVideos()
 		if ( mutation.type == "childList")
 		{
 			mutation.addedNodes.forEach(function(node) {
-				if ( node instanceof HTMLVideoElement)
+				if ( node instanceof HTMLVideoElement || node instanceof HTMLAudioElement )
 				{
-					console.log('video created', node)
-					//blockVideo(node)
+					blockMedia(node, true)
 				}
 				
 			});
@@ -19,6 +18,6 @@ var observer = new MutationObserver(function(mutations) {
 // Pause any dynamic added or started Video
 document.addEventListener("DOMContentLoaded", function(event) {
 	if ( document )
-		observer.observe(document.body, {"childList": true, "subtree": false});
+		observer.observe(document.body, {"childList": true, "subtree": true});
 	//BlockAllVideos()
 })
