@@ -1,1 +1,1 @@
-BlockAllVideos()
+BlockAllMedia(); 

@@ -1,9 +1,9 @@
 {
 
 	"name": "BlockElement5",
-	"version": "0.5",
+	"version": "0.5.2",
 	
-	"description": "Trys to block HTML video element or atleast trys to pause it",
+	"description": "Trys to block HTML media element or atleast trys to pause it",
 
 	"permissions": [
 		"tabs"
@@ -12,14 +12,15 @@
 		{
 			"matches": ["*://*/*"],
 			"js": ["lib.js", "background.js"],
-			"run_at": "document_end"
+			"run_at": "document_idle",
+			"all_frames": true
 		},
 		{
 			"matches": ["*://*/*"],
 			"js": ["lib.js", "watch.js"],
-			"run_at": "document_start"
+			"run_at": "document_start",
+			"all_frames": true
 		}
 	],
-	"content_security_policy": "script-src 'self'; object-src 'self'",
 	"manifest_version": 2
 }

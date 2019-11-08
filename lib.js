@@ -1,88 +1,39 @@
 function blockMedia(mediaElement, dynamic = false) {
-	if (!mediaElement.dataset.unblockElementId && !mediaElement.dataset.blockElementId) {
-		if ( !mediaElement.paused ) {
-			mediaElement.pause();
-		}
-		mediaElement.removeAttribute('autoplay')
-		var parentSq = mediaElement.parentElement
-
-		var clickToPlay = document.createElement('div');
-		if (parentSq) {
-			parentSq.replaceChild( clickToPlay, mediaElement );
-		}
-		
-
+	mediaElement.removeAttribute('autoplay');
+	mediaElement.setAttribute('preload', 'none');
+	mediaElement.pause();
+	if (!mediaElement.dataset.unblockElement && !mediaElement.dataset.blockElementId) {
+		mediaElement.addEventListener('play', watchForPlayEvent, true );
+		mediaElement.addEventListener('playing', watchForPlayEvent, true );
+		mediaElement.addEventListener('mouseover', unblockElement );
 		if ( !mediaElement.hasAttribute('playsinline') ) {
-			clickToPlay.addEventListener('click', unblockVideo, true);
-
-			blockedmediaElements.push({ 'media': mediaElement, 'blocker': clickToPlay });
-
-			clickToPlay.dataset.blockElementId = mediaElement.dataset.blockElementId = blockedmediaElements.length;
-
-			clickToPlay.style.cssText = "border: 2px red dashed; background: #FFF8; color: black; text-align: center; cursor: pointer; box-sizing:border-box; top: 0; left: 0; height: 100%; width: 100%; padding-bottom: calc( 50% - 1em); z-index:10000;";
-			clickToPlay.textContent = '▶'
+			mediaElement.setAttribute('preload', 'metadata');
 		} else {
 			// playsinline - Likely used as background, so don't do a click to play 
-			console.log('Disabled a media background', mediaElement, parentSq, dynamic);
+			console.log('Disabled a media background', mediaElement, dynamic);
+			mediaElement.setAttribute('preload', 'none');
 		}
-
+		mediaElement.dataset.blockElementId = 1;
 	} 
 	
 };
 
-function tryPlayingTheDamnVideo(mediaElement) {
-	setTimeout(function () {
-		// Youtube had issues
-		if (mediaElement.paused) {
-			var playPromise = mediaElement.play()
-			if (playPromise !== undefined) {
-				playPromise.then(function() {
-					
-				}).catch(function(error) {
-					console.log('Media Can not be played. ' + error); 
-					tryPlayingTheDamnVideo(mediaElement)
-				});
-			}
-		}
-	}, 1500);
+function unblockElement(event) {
+	event.target.dataset.unblockElement = 1;
 }
 
-function unblockVideo(event)
-{
-	if (event) 
-		event.preventDefault();
-
-	var parent = this.parentElement
-	var videoid = parseInt(this.dataset.blockElementId )-1
-	
-	var mediaElement = blockedmediaElements[videoid].media
-	if (mediaElement) {
-		parent.replaceChild( mediaElement, this);
-		mediaElement.dataset.unblockElementId = 1;
-		tryPlayingTheDamnVideo(mediaElement)
-	} else {
-		parent.removeChild( this );
-		console.log( 'mediaElement not found', videoid, blockedmediaElements);
-	}
-
-	return false
-}
-
-function watchForPlayEvent(event)
-{
-	if (!this.dataset.unblockElementId && !this.paused)
+function watchForPlayEvent(event) {
+	event.preventDefault();
+	if (!this.dataset.unblockElement) {
 		this.pause()
+	}
 	return false;
 }
 
-function BlockAllVideos()
-{
+function BlockAllMedia() {
 	var nodes = document.querySelectorAll("video, audio");
 	for(let i = 0; i < nodes.length; i++) {
-		nodes[i].addEventListener('play', watchForPlayEvent );
-		nodes[i].addEventListener('playing', watchForPlayEvent );
 		blockMedia(nodes[i])
 	}
 }
 
-blockedmediaElements = [];
