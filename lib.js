@@ -2,7 +2,7 @@ function blockMedia(mediaElement, dynamic = false) {
 	mediaElement.removeAttribute('autoplay');
 	mediaElement.setAttribute('preload', 'none');
 	mediaElement.pause();
-	if (!mediaElement.dataset.unblockElement && !mediaElement.dataset.blockElementId) {
+	if (!mediaElement.dataset.unblockElementId && !mediaElement.dataset.blockElementId) {
 		mediaElement.addEventListener('play', watchForPlayEvent, true );
 		mediaElement.addEventListener('playing', watchForPlayEvent, true );
 		mediaElement.addEventListener('mouseover', unblockElement );
@@ -17,14 +17,16 @@ function blockMedia(mediaElement, dynamic = false) {
 	} 
 	
 };
-
+function resetUnblockElement(mediaElement) {
+	delete  mediaElement.dataset.unblockElementId;
+}
 function unblockElement(event) {
-	event.target.dataset.unblockElement = 1;
+	event.target.dataset.unblockElementId = event.target.currentSrc;
 }
 
 function watchForPlayEvent(event) {
 	event.preventDefault();
-	if (!this.dataset.unblockElement) {
+	if (!this.dataset.unblockElementId || this.dataset.unblockElementId != event.target.currentSrc) {
 		this.pause()
 	}
 	return false;
